@@ -12,7 +12,8 @@ class PaceCalculator extends Component {
             hours: null,
             minutes: null,
             seconds: null,
-            distanceUnit: 'kilometers'
+            distanceUnit: 'miles',
+            paceResult: null
         };
     }
 
@@ -25,43 +26,75 @@ class PaceCalculator extends Component {
         event.preventDefault();
         try {
 
+            this.setState({
+                errorMessage: '',
+                paceResult: null
+            });
+
+
             // Perform calculations or further actions with the captured data
             const {distance, hours, minutes, seconds, distanceUnit} = this.state;
 
-
-
-            // Validate the captured data
-            if (
-                distance < 0 ||
-                hours < 0 ||
-                minutes < 0 ||
-                seconds < 0
-            ) {
-                // Throw an error or handle the validation failure accordingly
-                console.error('Invalid input: distance, hours, minutes, or seconds cannot be negative');
-                return; // Exit the function or component render if needed
-            }
-
+            //fix for Nan when they get deleted
 
             // Create the DTO object with the captured data
             const params = {
-                distance: parseFloat(distance),
+                distance: distance !== null ? parseFloat(distance) : 0,
                 hours: hours !== null ? parseInt(hours) : 0,
                 minutes: minutes !== null ? parseInt(minutes) : 0,
                 seconds: seconds !== null ? parseFloat(seconds) : 0,
                 distanceUnit
             };
 
+
+
+            // Validate the captured data
+            if (
+                params.distance < 0 ||
+                params.hours < 0 ||
+                params.minutes < 0 ||
+                params.seconds < 0
+            ) {
+                // Throw an error or handle the validation failure accordingly
+                throw new Error('Invalid input: distance, hours, minutes, or seconds cannot be negative');
+            }
+
+            if (
+                params.hours === 0 || &&
+                params.minutes === 0 &&
+                params.seconds === 0
+            ) {
+                // Throw an error or handle the validation failure accordingly
+                throw new Error('Invalid input: time cannot be zero');
+            }
+
+            if (
+                params.distance === 0 || isNaN(params.distance)
+            ) {
+                // Throw an error or handle the validation failure accordingly
+                throw new Error('Invalid input: distance cannot be zero');
+            }
+
+
+
+
+
             const response = await axios.get('http://localhost:8080/pace-calculator', { params: params });
 
-            // Handle the response from the API
-            console.log(response.data);
+            // Update the paceResult in the component's state with the API response
+            const { milePace, kilometerPace } = response.data;
+            this.setState({ paceResult: { milePace, kilometerPace } });
+            console.log(params.distance);
         } catch (error) {
             console.error(error);
+            this.setState({ errorMessage: error});
         }
     }
 
     render() {
+
+        const { paceResult, errorMessage} = this.state;
+
         return (
             <div className="container">
                 <h1 className="mb-xxl-5 mt-5">Pace Calculator</h1>
@@ -139,10 +172,26 @@ class PaceCalculator extends Component {
                         </Col>
                     </Form.Group>
 
-
                     <Button variant="primary" type="submit">Calculate</Button>
+
+
                 </Form>
+
+                {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
+
+                {/* Display the paceResult at the bottom of the webpage */}
+                    {paceResult && (
+                        <div style={{fontSize: '20px', marginTop: '50px' }}>
+                            <h2>Pace Result:</h2>
+                            <p>Mile Pace: {paceResult.milePace}</p>
+                            <p>Kilometer Pace: {paceResult.kilometerPace}</p>
+                        </div>
+                    )}
+
             </div>
+
+
+
         );
     }
 }

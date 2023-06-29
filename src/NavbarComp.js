@@ -32,7 +32,6 @@ class NavbarComp extends Component {
                 <Navbar bg="dark" data-bs-theme="dark" style={navbarStyle}>
                     <Container>
                         <img src={logo} alt="Logo" style={logoStyle} className="logo" />
-                        <Navbar.Brand as={Link} to={"/"}>Track Calculator</Navbar.Brand>
                         <Nav className="me-auto">
                             <Nav.Link as={Link} to={"/paceCalculator"}>Pace Calculator</Nav.Link>
                             <Nav.Link as={Link} to={"/timeCalculator"}>Time Calculator</Nav.Link>
