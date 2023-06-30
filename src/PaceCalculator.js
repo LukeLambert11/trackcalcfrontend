@@ -60,7 +60,7 @@ class PaceCalculator extends Component {
             }
 
             if (
-                params.hours === 0 || &&
+                params.hours === 0  &&
                 params.minutes === 0 &&
                 params.seconds === 0
             ) {
@@ -99,27 +99,29 @@ class PaceCalculator extends Component {
             <div className="container">
                 <h1 className="mb-xxl-5 mt-5">Pace Calculator</h1>
                 <Form onSubmit={this.handleSubmit}>
-                    <Form.Group as={Row} className="mb-custom justify-content-center">
-                        <Form.Label column sm="2" className="text-right">
+                    <Form.Group className="mb-custom">
+                        <Form.Label className="text-center">
                             Distance Unit
                         </Form.Label>
-                        <Col sm="2">
+                        <Col xs={{ span: 10, offset: 1 }} sm={{ span: 2, offset: 0 }} className="text-center">
                             <Form.Control
                                 as="select"
                                 name="distanceUnit"
                                 value={this.state.distanceUnit}
                                 onChange={this.handleInputChange}
                                 size="sm"
-                                style={{ height: '38px', width: '150px' }}
+                                style={{ height: '38px', width: '100%' }}
                             >
                                 <option value="kilometers">Kilometers</option>
                                 <option value="miles">Miles</option>
                             </Form.Control>
                         </Col>
-                        <Form.Label column sm="1" className="text-right">
+                    </Form.Group>
+                    <Form.Group className="mb-custom">
+                        <Form.Label className="text-center">
                             Distance
                         </Form.Label>
-                        <Col sm="1">
+                        <Col xs={{ span: 10, offset: 1 }} sm={{ span: 2, offset: 0 }} className="text-center">
                             <Form.Control
                                 type="number"
                                 name="distance"
@@ -127,10 +129,11 @@ class PaceCalculator extends Component {
                                 onChange={this.handleInputChange}
                                 size="sm"
                                 step="0.1"
-                                style={{ height: '38px', width: '150px' }}
+                                style={{ height: '38px', width: '100%' }}
                             />
                         </Col>
                     </Form.Group>
+
 
                     <Form.Group as={Row} className="mb-custom justify-content-center">
                         <Form.Label column sm="3">
