@@ -9,11 +9,11 @@ class PaceCalculator extends Component {
         super(props);
         this.state = {
             distance: 0,
-            hours: null,
-            minutes: null,
-            seconds: null,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
             distanceUnit: 'miles',
-            paceResult: null
+            paceResult: 0
         };
     }
 

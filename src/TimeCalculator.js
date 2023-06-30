@@ -97,6 +97,9 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
 
     render() {
+
+        const { paceResult, errorMessage} = this.state;
+
         return (
             <div>
                 <h1 style={{
@@ -104,79 +107,92 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                     marginTop: '30px',
 
                     /* Adjust spacing for smaller screens */
-                    '@media (max-width: 767px)': {
+                    '@media (maxWidth: 767px)': {
                         marginBottom: '10px', /* Reduced spacing for mobile */
                         marginTop: '10px'
                     }
                 }}>Pace Calculator 2.0</h1>
             <Form>
                 <Row className="mb-3">
-                    <Form.Group as={Col} controlId="formGridEmail">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" />
-                    </Form.Group>
-
-                    <Form.Group as={Col} controlId="formGridPassword">
-
-                        <Form.Label className="ml-2">Pace Unit</Form.Label>
-                        <div>
-                            <Form.Check
-                                type="radio"
-                                label="miles"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios1"
-                                style={{ display: 'flex', alignItems: 'center'}}
-                            />
-
-                            <Form.Check
-                                type="radio"
-                                label="kilometers"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios2"
-                                style={{ display: 'flex', alignItems: 'center' }}
-                            />
+                    <Form.Group as={Col} controlId="formDistance">
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <div style={{ alignSelf: 'right', width: '200px' }}>
+                                <Form.Label style={{ fontSize: '20px' }}>Distance</Form.Label>
+                            </div>
+                            <Form.Control type="number" placeholder="Enter Distance" style={{ width: '200px' }} />
                         </div>
                     </Form.Group>
+
+                    <Form.Group as={Col} controlId="formGridDistnaceUnit">
+
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Form.Label style={{fontSize: '20px'}}>Distance Unit</Form.Label>
+                                <Form.Check
+                                    type="radio"
+                                    label="miles"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios1"
+                                    style={{ marginRight: '10px' }}
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="kilometers"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios2"
+                                    style={{ marginRight: '10px' }}
+                                />
+                            </div>
+                    </Form.Group>
                 </Row>
-
-                <Form.Group className="mb-3" controlId="formGridAddress1">
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control placeholder="1234 Main St" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formGridAddress2">
-                    <Form.Label>Address 2</Form.Label>
-                    <Form.Control placeholder="Apartment, studio, or floor" />
-                </Form.Group>
 
                 <Row className="mb-3">
+                    <div>
+                        <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
+                    </div>
                     <Form.Group as={Col} controlId="formGridCity">
-                        <Form.Label>City</Form.Label>
-                        <Form.Control />
+                        <Form.Control
+                            type="number"
+                            placeholder="Hours"
+                            value={this.state.distance}
+                            onChange={this.handleInputChange}/>
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="formGridState">
-                        <Form.Label>State</Form.Label>
-                        <Form.Select defaultValue="Choose...">
-                            <option>Choose...</option>
-                            <option>...</option>
-                        </Form.Select>
+                    <Form.Group as={Col} controlId="formGridMinutes">
+                        <Form.Control
+                            type="number"
+                            placeholder="Minutes"
+                            value={this.state.distance}
+                            onChange={this.handleInputChange}/>
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="formGridZip">
-                        <Form.Label>Zip</Form.Label>
-                        <Form.Control />
+                    <Form.Group as={Col} controlId="formGridSeconds">
+                        <Form.Control
+                            type="float"
+                            placeholder="Seconds"
+                            value={this.state.seconds}
+                            onChange={(e) => this.setState({ seconds: e.target.value })}
+                           />
                     </Form.Group>
                 </Row>
-
-                <Form.Group className="mb-3" id="formGridCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                </Form.Group>
 
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
             </Form>
+
+
+                {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
+
+                {/* Display the paceResult at the bottom of the webpage */}
+                {paceResult && (
+                    <div style={{fontSize: '20px', marginTop: '50px' }}>
+                        <h2>Pace Result:</h2>
+                        <p>Mile Pace: {paceResult.milePace}</p>
+                        <p>Kilometer Pace: {paceResult.kilometerPace}</p>
+                    </div>
+                )}
+
+
             </div>
         );
     }
