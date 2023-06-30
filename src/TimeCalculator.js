@@ -9,20 +9,21 @@ import {Button, Col, Form, Row} from "react-bootstrap";
         super(props);
         this.state = {
             distance: 0,
-            hours: null,
-            minutes: null,
-            seconds: null,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
             distanceUnit: 'miles',
             paceResult: null
         };
     }
 
-    handleInputChange = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
-    }
+        handleInputChange = (event) => {
+            const { name, value } = event.target;
+            this.setState({ [name]: value });
+        }
 
-    handleSubmit = async (event) => {
+
+     handleSubmit = async (event) => {
         event.preventDefault();
         try {
 
@@ -39,12 +40,30 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
             // Create the DTO object with the captured data
             const params = {
-                distance: distance !== null ? parseFloat(distance) : 0,
+                distance: (distance !== null)? parseFloat(distance) : 0,
                 hours: hours !== null ? parseInt(hours) : 0,
                 minutes: minutes !== null ? parseInt(minutes) : 0,
                 seconds: seconds !== null ? parseFloat(seconds) : 0,
                 distanceUnit
             };
+
+            if(isNaN(params.distance)){
+                params.distance = 0;
+            }
+
+            if(isNaN(params.hours)){
+                params.hours = 0;
+            }
+
+            if(isNaN(params.minutes)){
+                params.minutes = 0;
+            }
+
+            if(isNaN(params.seconds)){
+                params.seconds = 0;
+            }
+
+
 
 
 
@@ -84,7 +103,6 @@ import {Button, Col, Form, Row} from "react-bootstrap";
             // Update the paceResult in the component's state with the API response
             const { milePace, kilometerPace } = response.data;
             this.setState({ paceResult: { milePace, kilometerPace } });
-            console.log(params.distance);
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
@@ -112,14 +130,21 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                         marginTop: '10px'
                     }
                 }}>Pace Calculator 2.0</h1>
-            <Form>
+
+                <Form onSubmit={this.handleSubmit}>
                 <Row className="mb-3">
                     <Form.Group as={Col} controlId="formDistance">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                             <div style={{ alignSelf: 'right', width: '200px' }}>
                                 <Form.Label style={{ fontSize: '20px' }}>Distance</Form.Label>
                             </div>
-                            <Form.Control type="number" placeholder="Enter Distance" style={{ width: '200px' }} />
+                            <Form.Control
+                                style = {{width: '200px'}}
+                                type="number"
+                                placeholder="Enter Distance"
+                                value={this.state.distance || ''}
+                                onChange={(e) => this.setState({ distance: e.target.value })}
+                            />
                         </div>
                     </Form.Group>
 
@@ -133,6 +158,9 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                                     name="formHorizontalRadios"
                                     id="formHorizontalRadios1"
                                     style={{ marginRight: '10px' }}
+                                    defaultChecked
+                                    hecked={this.state.distanceUnit === 'miles'}
+                                    onChange={() => this.setState({ distanceUnit: 'miles' })}
                                 />
                                 <Form.Check
                                     type="radio"
@@ -140,6 +168,8 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                                     name="formHorizontalRadios"
                                     id="formHorizontalRadios2"
                                     style={{ marginRight: '10px' }}
+                                    checked={this.state.distanceUnit === 'kilometers'}
+                                    onChange={() => this.setState({ distanceUnit: 'kilometers' })}
                                 />
                             </div>
                     </Form.Group>
@@ -151,32 +181,52 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                     </div>
                     <Form.Group as={Col} controlId="formGridCity">
                         <Form.Control
-                            type="number"
+                            type="text"
+                            pattern="[0-9]*"
+                            inputMode="numeric"
                             placeholder="Hours"
-                            value={this.state.distance}
-                            onChange={this.handleInputChange}/>
+                            value={this.state.hours || ''}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                this.setState({ hours: numericValue });
+                            }}
+                        />
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridMinutes">
                         <Form.Control
-                            type="number"
+                            type="text"
+                            pattern="[0-9]*"
+                            inputMode="numeric"
                             placeholder="Minutes"
-                            value={this.state.distance}
-                            onChange={this.handleInputChange}/>
+                            value={this.state.minutes || ''}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                this.setState({ minutes: numericValue });
+                            }}
+                        />
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridSeconds">
                         <Form.Control
-                            type="float"
+                            type="text"
+                            pattern="[0-9]*(\.[0-9])?"
+                            inputMode="decimal"
                             placeholder="Seconds"
-                            value={this.state.seconds}
-                            onChange={(e) => this.setState({ seconds: e.target.value })}
-                           />
+                            value={this.state.seconds || ''}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                this.setState({ seconds: numericValue });
+                            }}
+                        />
                     </Form.Group>
                 </Row>
 
                 <Button variant="primary" type="submit">
-                    Submit
+                    Calculate
                 </Button>
             </Form>
 

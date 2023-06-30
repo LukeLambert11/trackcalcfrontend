@@ -22,7 +22,7 @@ class PaceCalculator extends Component {
         this.setState({ [name]: value });
     }
 
-    handleSubmit = async (event) => {
+   /* handleSubmit = async (event) => {
         event.preventDefault();
         try {
 
@@ -89,7 +89,7 @@ class PaceCalculator extends Component {
             console.error(error);
             this.setState({ errorMessage: error});
         }
-    }
+    }*/
 
     render() {
 
