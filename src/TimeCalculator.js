@@ -13,7 +13,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
             minutes: 0,
             seconds: 0,
             distanceUnit: 'miles',
-            paceResult: null
+            timeResult: null
         };
     }
 
@@ -41,26 +41,26 @@ import {Button, Col, Form, Row} from "react-bootstrap";
             // Create the DTO object with the captured data
             const params = {
                 distance: (distance !== null)? parseFloat(distance) : 0,
-                hours: hours !== null ? parseInt(hours) : 0,
-                minutes: minutes !== null ? parseInt(minutes) : 0,
-                seconds: seconds !== null ? parseFloat(seconds) : 0,
-                distanceUnit
+                hourPace: hours !== null ? parseInt(hours) : 0,
+                minutePace: minutes !== null ? parseInt(minutes) : 0,
+                secondPace: seconds !== null ? parseFloat(seconds) : 0,
+                paceUnits: distanceUnit
             };
 
             if(isNaN(params.distance)){
                 params.distance = 0;
             }
 
-            if(isNaN(params.hours)){
-                params.hours = 0;
+            if(isNaN(params.hourPace)){
+                params.hourPace = 0;
             }
 
-            if(isNaN(params.minutes)){
-                params.minutes = 0;
+            if(isNaN(params.minutePace)){
+                params.minutePace = 0;
             }
 
-            if(isNaN(params.seconds)){
-                params.seconds = 0;
+            if(isNaN(params.secondPace)){
+                params.secondPace = 0;
             }
 
 
@@ -70,25 +70,25 @@ import {Button, Col, Form, Row} from "react-bootstrap";
             // Validate the captured data
             if (
                 params.distance < 0 ||
-                params.hours < 0 ||
-                params.minutes < 0 ||
-                params.seconds < 0
+                params.hourPace < 0 ||
+                params.minutePace < 0 ||
+                params.secondPace < 0
             ) {
                 // Throw an error or handle the validation failure accordingly
                 throw new Error('Invalid input: distance, hours, minutes, or seconds cannot be negative');
             }
 
             if (
-                params.hours === 0  &&
-                params.minutes === 0 &&
-                params.seconds === 0
+                params.hourPace === 0  &&
+                params.minutePace === 0 &&
+                params.secondPace === 0
             ) {
                 // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: time cannot be zero');
+                throw new Error('Invalid input: pace cannot be zero');
             }
 
             if (
-                params.distance === 0 || isNaN(params.distance)
+                params.distance === 0
             ) {
                 // Throw an error or handle the validation failure accordingly
                 throw new Error('Invalid input: distance cannot be zero');
@@ -98,11 +98,11 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
 
 
-            const response = await axios.get('http://localhost:8080/pace-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/time-calculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
-            const { milePace, kilometerPace } = response.data;
-            this.setState({ paceResult: { milePace, kilometerPace } });
+            const { time } = response.data;
+            this.setState({ timeResult: { time } });
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
@@ -116,7 +116,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
     render() {
 
-        const { paceResult, errorMessage} = this.state;
+        const { timeResult, errorMessage} = this.state;
 
         return (
             <div>
@@ -129,7 +129,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                         marginBottom: '10px', /* Reduced spacing for mobile */
                         marginTop: '10px'
                     }
-                }}>Pace Calculator 2.0</h1>
+                }}>Time Calculator</h1>
 
                 <Form onSubmit={this.handleSubmit}>
                 <Row className="mb-3">
@@ -159,7 +159,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                                     id="formHorizontalRadios1"
                                     style={{ marginRight: '10px' }}
                                     defaultChecked
-                                    hecked={this.state.distanceUnit === 'miles'}
+                                    checked={this.state.distanceUnit === 'miles'}
                                     onChange={() => this.setState({ distanceUnit: 'miles' })}
                                 />
                                 <Form.Check
@@ -177,7 +177,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
                 <Row className="mb-3">
                     <div>
-                        <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
+                        <Form.Label style={{ fontSize: '20px' }}>Pace</Form.Label>
                     </div>
                     <Form.Group as={Col} controlId="formGridCity">
                         <Form.Control
@@ -234,11 +234,10 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                 {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
 
                 {/* Display the paceResult at the bottom of the webpage */}
-                {paceResult && (
+                {timeResult && (
                     <div style={{fontSize: '20px', marginTop: '50px' }}>
-                        <h2>Pace Result:</h2>
-                        <p>Mile Pace: {paceResult.milePace}</p>
-                        <p>Kilometer Pace: {paceResult.kilometerPace}</p>
+                        <h2>Time Result:</h2>
+                        <p>Time: {timeResult.time}</p>
                     </div>
                 )}
 

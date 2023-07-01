@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import './paceCalculator/pace-calculator.css';
+import React, {Component} from 'react';
 import axios from "axios";
+import {Button, Col, Form, Row} from "react-bootstrap";
+
 
 
 class PaceCalculator extends Component {
@@ -13,7 +13,7 @@ class PaceCalculator extends Component {
             minutes: 0,
             seconds: 0,
             distanceUnit: 'miles',
-            paceResult: 0
+            paceResult: null
         };
     }
 
@@ -22,7 +22,8 @@ class PaceCalculator extends Component {
         this.setState({ [name]: value });
     }
 
-   /* handleSubmit = async (event) => {
+
+    handleSubmit = async (event) => {
         event.preventDefault();
         try {
 
@@ -39,12 +40,30 @@ class PaceCalculator extends Component {
 
             // Create the DTO object with the captured data
             const params = {
-                distance: distance !== null ? parseFloat(distance) : 0,
+                distance: (distance !== null)? parseFloat(distance) : 0,
                 hours: hours !== null ? parseInt(hours) : 0,
                 minutes: minutes !== null ? parseInt(minutes) : 0,
                 seconds: seconds !== null ? parseFloat(seconds) : 0,
                 distanceUnit
             };
+
+            if(isNaN(params.distance)){
+                params.distance = 0;
+            }
+
+            if(isNaN(params.hours)){
+                params.hours = 0;
+            }
+
+            if(isNaN(params.minutes)){
+                params.minutes = 0;
+            }
+
+            if(isNaN(params.seconds)){
+                params.seconds = 0;
+            }
+
+
 
 
 
@@ -84,117 +103,147 @@ class PaceCalculator extends Component {
             // Update the paceResult in the component's state with the API response
             const { milePace, kilometerPace } = response.data;
             this.setState({ paceResult: { milePace, kilometerPace } });
-            console.log(params.distance);
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
         }
-    }*/
+    }
+
+
+
+
+
 
     render() {
 
         const { paceResult, errorMessage} = this.state;
 
         return (
-            <div className="container">
-                <h1 className="mb-xxl-5 mt-5">Pace Calculator</h1>
+            <div>
+                <h1 style={{
+                    marginBottom: '30px', /* Default spacing */
+                    marginTop: '30px',
+
+                    /* Adjust spacing for smaller screens */
+                    '@media (maxWidth: 767px)': {
+                        marginBottom: '10px', /* Reduced spacing for mobile */
+                        marginTop: '10px'
+                    }
+                }}>Pace Calculator 2.0</h1>
+
                 <Form onSubmit={this.handleSubmit}>
-                    <Form.Group className="mb-custom">
-                        <Form.Label className="text-center">
-                            Distance Unit
-                        </Form.Label>
-                        <Col xs={{ span: 10, offset: 1 }} sm={{ span: 2, offset: 0 }} className="text-center">
+                    <Row className="mb-3">
+                        <Form.Group as={Col} controlId="formDistance">
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                <div style={{ alignSelf: 'right', width: '200px' }}>
+                                    <Form.Label style={{ fontSize: '20px' }}>Distance</Form.Label>
+                                </div>
+                                <Form.Control
+                                    style = {{width: '200px'}}
+                                    type="number"
+                                    placeholder="Enter Distance"
+                                    value={this.state.distance || ''}
+                                    onChange={(e) => this.setState({ distance: e.target.value })}
+                                />
+                            </div>
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridDistnaceUnit">
+
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Form.Label style={{fontSize: '20px'}}>Distance Unit</Form.Label>
+                                <Form.Check
+                                    type="radio"
+                                    label="miles"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios1"
+                                    style={{ marginRight: '10px' }}
+                                    defaultChecked
+                                    hecked={this.state.distanceUnit === 'miles'}
+                                    onChange={() => this.setState({ distanceUnit: 'miles' })}
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="kilometers"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios2"
+                                    style={{ marginRight: '10px' }}
+                                    checked={this.state.distanceUnit === 'kilometers'}
+                                    onChange={() => this.setState({ distanceUnit: 'kilometers' })}
+                                />
+                            </div>
+                        </Form.Group>
+                    </Row>
+
+                    <Row className="mb-3">
+                        <div>
+                            <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
+                        </div>
+                        <Form.Group as={Col} controlId="formGridCity">
                             <Form.Control
-                                as="select"
-                                name="distanceUnit"
-                                value={this.state.distanceUnit}
-                                onChange={this.handleInputChange}
-                                size="sm"
-                                style={{ height: '38px', width: '100%' }}
-                            >
-                                <option value="kilometers">Kilometers</option>
-                                <option value="miles">Miles</option>
-                            </Form.Control>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group className="mb-custom">
-                        <Form.Label className="text-center">
-                            Distance
-                        </Form.Label>
-                        <Col xs={{ span: 10, offset: 1 }} sm={{ span: 2, offset: 0 }} className="text-center">
-                            <Form.Control
-                                type="number"
-                                name="distance"
-                                value={this.state.distance}
-                                onChange={this.handleInputChange}
-                                size="sm"
-                                step="0.1"
-                                style={{ height: '38px', width: '100%' }}
+                                type="text"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                placeholder="Hours"
+                                value={this.state.hours || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                    this.setState({ hours: numericValue });
+                                }}
                             />
-                        </Col>
-                    </Form.Group>
+                        </Form.Group>
 
+                        <Form.Group as={Col} controlId="formGridMinutes">
+                            <Form.Control
+                                type="text"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                placeholder="Minutes"
+                                value={this.state.minutes || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                    this.setState({ minutes: numericValue });
+                                }}
+                            />
+                        </Form.Group>
 
-                    <Form.Group as={Row} className="mb-custom justify-content-center">
-                        <Form.Label column sm="3">
-                            Time
-                        </Form.Label>
-                        <Col sm="9">
-                            <Row>
-                                <Col sm="3"> {/* Adjusted column width to allocate more space */}
-                                    <Form.Control
-                                        type="number"
-                                        name="hours"
-                                        value={this.state.hours}
-                                        onChange={this.handleInputChange}
-                                        placeholder="Hours"
-                                        style={{ height: '38px', width: '150px' }}
-                                    />
-                                </Col>
-                                <Col sm="3"> {/* Adjusted column width to allocate more space */}
-                                    <Form.Control
-                                        type="number"
-                                        name="minutes"
-                                        value={this.state.minutes}
-                                        onChange={this.handleInputChange}
-                                        placeholder="Minutes"
-                                        style={{ height: '38px', width: '150px' }}
-                                    />
-                                </Col>
-                                <Col sm="3"> {/* Adjusted column width to allocate more space */}
-                                    <Form.Control
-                                        type="number"
-                                        name="seconds"
-                                        value={this.state.seconds}
-                                        onChange={this.handleInputChange}
-                                        placeholder="Seconds"
-                                        style={{ height: '38px', width: '150px' }}
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Form.Group>
+                        <Form.Group as={Col} controlId="formGridSeconds">
+                            <Form.Control
+                                type="text"
+                                pattern="[0-9]*(\.[0-9])?"
+                                inputMode="decimal"
+                                placeholder="Seconds"
+                                value={this.state.seconds || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                    this.setState({ seconds: numericValue });
+                                }}
+                            />
+                        </Form.Group>
+                    </Row>
 
-                    <Button variant="primary" type="submit">Calculate</Button>
-
-
+                    <Button variant="primary" type="submit">
+                        Calculate
+                    </Button>
                 </Form>
+
 
                 {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
 
                 {/* Display the paceResult at the bottom of the webpage */}
-                    {paceResult && (
-                        <div style={{fontSize: '20px', marginTop: '50px' }}>
-                            <h2>Pace Result:</h2>
-                            <p>Mile Pace: {paceResult.milePace}</p>
-                            <p>Kilometer Pace: {paceResult.kilometerPace}</p>
-                        </div>
-                    )}
+                {paceResult && (
+                    <div style={{fontSize: '20px', marginTop: '50px' }}>
+                        <h2>Pace Result:</h2>
+                        <p>Mile Pace: {paceResult.milePace}</p>
+                        <p>Kilometer Pace: {paceResult.kilometerPace}</p>
+                    </div>
+                )}
+
 
             </div>
-
-
-
         );
     }
 }
