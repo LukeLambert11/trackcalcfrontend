@@ -118,8 +118,13 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
         const { timeResult, errorMessage} = this.state;
 
+        const divStyle = {
+            padding: '1%',
+        };
+
+
         return (
-            <div>
+            <div style={divStyle}>
                 <h1 style={{
                     marginBottom: '30px', /* Default spacing */
                     marginTop: '30px',

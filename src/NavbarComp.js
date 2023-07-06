@@ -12,6 +12,7 @@ import Home from "./Home";
 import PaceCalculator from "./PaceCalculator";
 import logo from "./logo.jpg";
 import TimeCalculator from "./TimeCalculator"; // Assuming you have the logo image file in the same directory
+import WindCalculator from "./WindCalculator";
 
 
 class NavbarComp extends Component {
@@ -33,6 +34,7 @@ class NavbarComp extends Component {
                     <Container>
                         <img src={logo} alt="Logo" style={logoStyle} className="logo" />
                         <Nav className="me-auto">
+                            <Nav.Link as={Link} to={"/windCalculator"}>Wind Calculator</Nav.Link>
                             <Nav.Link as={Link} to={"/paceCalculator"}>Pace Calculator</Nav.Link>
                             <Nav.Link as={Link} to={"/timeCalculator"}>Time Calculator</Nav.Link>
 
@@ -49,6 +51,9 @@ class NavbarComp extends Component {
                         </Route>
                         <Route path="/timeCalculator">
                             <TimeCalculator/>
+                        </Route>
+                        <Route path="/windCalculator">
+                            <WindCalculator/>
                         </Route>
                         <Route path="/">
                             <Home/>

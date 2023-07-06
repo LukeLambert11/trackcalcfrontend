@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import {Button, Col, Form, Row} from "react-bootstrap";
+import Select from 'react-select';
+import './mobilestyles.css';
 
 
-
-class PaceCalculator extends Component {
+class WindCalculator extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -118,107 +119,64 @@ class PaceCalculator extends Component {
 
         const { paceResult, errorMessage} = this.state;
 
+
         const divStyle = {
             padding: '1%',
         };
 
-        return (
-             <div style={divStyle}>
-                <h1 style={{
-                    marginBottom: '30px', /* Default spacing */
-                    marginTop: '30px',
+        const selectStyles = {
+            control: (provided) => ({
+                ...provided,
+                width: '160px', // Set the desired width here
+            }),
+            menu: (provided) => ({
+                ...provided,
+                width: '160px', // Set the desired width here
+            }),
+        };
 
-                    /* Adjust spacing for smaller screens */
-                    '@media (maxWidth: 767px)': {
-                        marginBottom: '10px', /* Reduced spacing for mobile */
-                        marginTop: '10px'
-                    }
-                }}>Pace Calculator </h1>
+        //make so the widths above depend on the screen size
+
+        return (
+            <div>
+                <h1 className="responsive-heading">Wind Calculator </h1>
+
 
                 <Form onSubmit={this.handleSubmit}>
                     <Row className="mb-3">
-                        <Form.Group as={Col} controlId="formDistance">
+
+                        <Col>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                <div style={{ alignSelf: 'right', width: '200px' }}>
-                                    <Form.Label style={{ fontSize: '20px' }}>Distance</Form.Label>
+                                <div
+                                    style={{
+                                        alignSelf: 'center',
+                                        width: '97%',
+                                    }}
+                                >
+                                    <Form.Label style={{ fontSize: '20px' }}>Event</Form.Label>
                                 </div>
-                                <Form.Control
-                                    style = {{width: '200px'}}
-                                    type="number"
-                                    placeholder="Enter Distance"
-                                    value={this.state.distance || ''}
-                                    onChange={(e) => this.setState({ distance: e.target.value })}
-                                />
-                            </div>
-                        </Form.Group>
-
-                        <Form.Group as={Col} controlId="formGridDistnaceUnit">
-
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                <Form.Label style={{fontSize: '20px'}}>Distance Unit</Form.Label>
-                                <Form.Check
-                                    type="radio"
-                                    label="miles"
-                                    name="formHorizontalRadios"
-                                    id="formHorizontalRadios1"
-                                    style={{ marginRight: '10px' }}
-                                    defaultChecked
-                                    checked={this.state.distanceUnit === 'miles'}
-                                    onChange={() => this.setState({ distanceUnit: 'miles' })}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="kilometers"
-                                    name="formHorizontalRadios"
-                                    id="formHorizontalRadios2"
-                                    style={{ marginRight: '10px' }}
-                                    checked={this.state.distanceUnit === 'kilometers'}
-                                    onChange={() => this.setState({ distanceUnit: 'kilometers' })}
-                                />
-                            </div>
-                        </Form.Group>
-                    </Row>
-
-                    <Row className="mb-3">
-                        <div>
-                            <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
-                        </div>
-                        <Form.Group as={Col} controlId="formGridCity">
-                            <Form.Control
-                                type="text"
-                                pattern="[0-9]*"
-                                inputMode="numeric"
-                                placeholder="Hours"
-                                value={this.state.hours || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
-                                    this.setState({ hours: numericValue });
-                                }}
+                            <Select
+                                options={[
+                                    { value: '100', label: '100 m' },
+                                    { value: 'option2', label: '100/110 H' },
+                                    { value: 'option3', label: '200 m' }
+                                ]}
+                                placeholder="Select an option"
+                                styles={selectStyles}
                             />
-                        </Form.Group>
-
-                        <Form.Group as={Col} controlId="formGridMinutes">
-                            <Form.Control
-                                type="text"
-                                pattern="[0-9]*"
-                                inputMode="numeric"
-                                placeholder="Minutes"
-                                value={this.state.minutes || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
-                                    this.setState({ minutes: numericValue });
-                                }}
-                            />
-                        </Form.Group>
+                            </div>
+                        </Col>
 
                         <Form.Group as={Col} controlId="formGridSeconds">
+                            <div>
+                                <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
+                            </div>
                             <Form.Control
+                                style={{width: '97%'}}
                                 type="text"
                                 pattern="[0-9]*(\.[0-9])?"
                                 inputMode="decimal"
-                                placeholder="Seconds"
+                                placeholder="seconds or meters"
                                 value={this.state.seconds || ''}
                                 onChange={(e) => {
                                     const inputValue = e.target.value;
@@ -228,6 +186,7 @@ class PaceCalculator extends Component {
                             />
                         </Form.Group>
                     </Row>
+
 
                     <Button variant="primary" type="submit">
                         Calculate
@@ -252,4 +211,4 @@ class PaceCalculator extends Component {
     }
 }
 
-export default PaceCalculator;
+export default WindCalculator;
