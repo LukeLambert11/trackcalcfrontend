@@ -9,12 +9,11 @@ class WindCalculator extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            distance: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            distanceUnit: 'miles',
-            paceResult: null
+
+            event: '',
+            performance: 0,
+            wind: 0,
+            windResult: null
         };
     }
 
@@ -30,39 +29,29 @@ class WindCalculator extends Component {
 
             this.setState({
                 errorMessage: '',
-                paceResult: null
+                windResult: null
             });
 
 
             // Perform calculations or further actions with the captured data
-            const {distance, hours, minutes, seconds, distanceUnit} = this.state;
+            const {event, performance} = this.state;
 
             //fix for Nan when they get deleted
 
             // Create the DTO object with the captured data
             const params = {
-                distance: (distance !== null)? parseFloat(distance) : 0,
-                hours: hours !== null ? parseInt(hours) : 0,
-                minutes: minutes !== null ? parseInt(minutes) : 0,
-                seconds: seconds !== null ? parseFloat(seconds) : 0,
-                distanceUnit
+                performance: (performance !== null)? parseFloat(performance) : 0,
+                event
             };
 
-            if(isNaN(params.distance)){
-                params.distance = 0;
+            if(isNaN(params.performance)){
+                params.performance = 0;
             }
 
-            if(isNaN(params.hours)){
-                params.hours = 0;
+            if(isNaN(params.event)){
+                params.event = '';
             }
 
-            if(isNaN(params.minutes)){
-                params.minutes = 0;
-            }
-
-            if(isNaN(params.seconds)){
-                params.seconds = 0;
-            }
 
 
 
@@ -70,40 +59,26 @@ class WindCalculator extends Component {
 
             // Validate the captured data
             if (
-                params.distance < 0 ||
-                params.hours < 0 ||
-                params.minutes < 0 ||
-                params.seconds < 0
+               params.performance < 0
             ) {
                 // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: distance, hours, minutes, or seconds cannot be negative');
+                throw new Error('Invalid input: performance must be greater than zero');
             }
 
             if (
-                params.hours === 0  &&
-                params.minutes === 0 &&
-                params.seconds === 0
+                params.event === ''
             ) {
                 // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: time cannot be zero');
-            }
-
-            if (
-                params.distance === 0 || isNaN(params.distance)
-            ) {
-                // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: distance cannot be zero');
+                throw new Error('Invalid input: select an event');
             }
 
 
 
-
-
-            const response = await axios.get('http://localhost:8080/pace-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/wind-calculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
-            const { milePace, kilometerPace } = response.data;
-            this.setState({ paceResult: { milePace, kilometerPace } });
+            const {convertedPerformance} = response.data;
+            this.setState({ windResult: { convertedPerformance} });
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
@@ -120,9 +95,7 @@ class WindCalculator extends Component {
         const { paceResult, errorMessage} = this.state;
 
 
-        const divStyle = {
-            padding: '1%',
-        };
+
 
         const selectStyles = {
             control: (provided) => ({
@@ -158,11 +131,16 @@ class WindCalculator extends Component {
                             <Select
                                 options={[
                                     { value: '100', label: '100 m' },
-                                    { value: 'option2', label: '100/110 H' },
-                                    { value: 'option3', label: '200 m' }
+                                    { value: '200', label: '200 m' },
+                                    { value: '100/100H', label: '100/110 H' },
+                                    { value: 'LONG_JUMP', label: 'Long Jump' },
+                                    { value: 'TRIPLE_JUMP', label: 'Triple Jump' }
                                 ]}
                                 placeholder="Select an option"
                                 styles={selectStyles}
+                                onChange={(e) => {
+                                    this.setState({ event: e.value });
+                                }}
                             />
                             </div>
                         </Col>
@@ -174,14 +152,14 @@ class WindCalculator extends Component {
                             <Form.Control
                                 style={{width: '97%'}}
                                 type="text"
-                                pattern="[0-9]*(\.[0-9])?"
+                                pattern="[0-9]*(\.[0-9]*)?"
                                 inputMode="decimal"
                                 placeholder="seconds or meters"
-                                value={this.state.seconds || ''}
+                                value={this.state.performance || ''}
                                 onChange={(e) => {
                                     const inputValue = e.target.value;
                                     const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
-                                    this.setState({ seconds: numericValue });
+                                    this.setState({ performance: numericValue });
                                 }}
                             />
                         </Form.Group>

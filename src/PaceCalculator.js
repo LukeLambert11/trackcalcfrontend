@@ -216,7 +216,7 @@ class PaceCalculator extends Component {
                         <Form.Group as={Col} controlId="formGridSeconds">
                             <Form.Control
                                 type="text"
-                                pattern="[0-9]*(\.[0-9])?"
+                                pattern="[0-9]*(\.[0-9]*)?"
                                 inputMode="decimal"
                                 placeholder="Seconds"
                                 value={this.state.seconds || ''}
