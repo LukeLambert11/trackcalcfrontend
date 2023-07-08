@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Container, Nav, Navbar} from "react-bootstrap";
 
 import {
     BrowserRouter as Router,
@@ -17,9 +17,6 @@ import WindCalculator from "./WindCalculator";
 
 class NavbarComp extends Component {
     render() {
-        const navbarStyle = {
-            height: '120px', // Adjust the height to your desired thickness
-        };
 
         const logoStyle = {
             width: '100px', // Adjust the width to your desired size
@@ -29,21 +26,23 @@ class NavbarComp extends Component {
 
         return (
             <Router>
-            <div>
-                <Navbar bg="dark" data-bs-theme="dark" style={navbarStyle}>
-                    <Container>
-                        <img src={logo} alt="Logo" style={logoStyle} className="logo" />
-                        <Nav className="me-auto">
-                            <Nav.Link as={Link} to={"/windCalculator"}>Wind Calculator</Nav.Link>
-                            <Nav.Link as={Link} to={"/paceCalculator"}>Pace Calculator</Nav.Link>
-                            <Nav.Link as={Link} to={"/timeCalculator"}>Time Calculator</Nav.Link>
-
-                            {/* <Nav.Link href="features">Features</Nav.Link>
-                            <Nav.Link href="pricing">Pricing</Nav.Link> */}
-                        </Nav>
-                    </Container>
-                </Navbar>
-            </div>
+                <div>
+                    <Navbar bg="dark" variant="dark" expand="lg">
+                        <Container fluid>
+                            <Navbar.Brand as={Link} to="/">
+                                <img src={logo} alt="Logo" style={logoStyle} className="logo" />
+                            </Navbar.Brand>
+                            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                            <Navbar.Collapse id="responsive-navbar-nav">
+                                <Nav className="me-auto">
+                                    <Nav.Link as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
+                                    <Nav.Link as={Link} to="/paceCalculator">Pace Calculator</Nav.Link>
+                                    <Nav.Link as={Link} to="/timeCalculator">Time Calculator</Nav.Link>
+                                </Nav>
+                            </Navbar.Collapse>
+                        </Container>
+                    </Navbar>
+                </div>
                 <div>
                     <Switch>
                         <Route path="/paceCalculator">

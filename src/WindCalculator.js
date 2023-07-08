@@ -109,23 +109,32 @@ class WindCalculator extends Component {
         };
 
         //make so the widths above depend on the screen size
+        const divStyle = {
+            padding: '1%',
+        };
 
         return (
-            <div>
-                <h1 className="responsive-heading">Wind Calculator </h1>
+            <div style={divStyle}>
+                <h1 style={{
+                    marginBottom: '30px', /* Default spacing */
+                    marginTop: '30px',
+
+                    /* Adjust spacing for smaller screens */
+                    '@media (maxWidth: 767px)': {
+                        marginBottom: '10px', /* Reduced spacing for mobile */
+                        marginTop: '10px'
+                    }
+                }}>Wind Calculator </h1>
 
 
                 <Form onSubmit={this.handleSubmit}>
                     <Row className="mb-3">
 
-                        <Col>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <Col className="d-flex justify-content-center">
+                            <div>
                                 <div
                                     style={{
-                                        alignSelf: 'center',
-                                        width: '97%',
-                                    }}
-                                >
+                                        margin: '0 auto'}}>
                                     <Form.Label style={{ fontSize: '20px' }}>Event</Form.Label>
                                 </div>
                             <Select
@@ -136,7 +145,7 @@ class WindCalculator extends Component {
                                     { value: 'LONG_JUMP', label: 'Long Jump' },
                                     { value: 'TRIPLE_JUMP', label: 'Triple Jump' }
                                 ]}
-                                placeholder="Select an option"
+                                placeholder="Select event"
                                 styles={selectStyles}
                                 onChange={(e) => {
                                     this.setState({ event: e.value });
@@ -145,6 +154,10 @@ class WindCalculator extends Component {
                             </div>
                         </Col>
 
+
+                    </Row>
+
+                    <Row>
                         <Form.Group as={Col} controlId="formGridSeconds">
                             <div>
                                 <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
@@ -165,6 +178,55 @@ class WindCalculator extends Component {
                         </Form.Group>
                     </Row>
 
+                    <Row className="mb-3">
+                        <div>
+                            <Form.Label style={{ fontSize: '20px' }}>Pace</Form.Label>
+                        </div>
+                        <Form.Group as={Col} controlId="formGridCity">
+                            <Form.Control
+                                type="text"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                placeholder="Hours"
+                                value={this.state.hours || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                    this.setState({ hours: numericValue });
+                                }}
+                            />
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridMinutes">
+                            <Form.Control
+                                type="text"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                placeholder="Minutes"
+                                value={this.state.minutes || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                    this.setState({ minutes: numericValue });
+                                }}
+                            />
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridSeconds">
+                            <Form.Control
+                                type="text"
+                                pattern="[0-9]*(\.[0-9]*)?"
+                                inputMode="decimal"
+                                placeholder="Seconds"
+                                value={this.state.seconds || ''}
+                                onChange={(e) => {
+                                    const inputValue = e.target.value;
+                                    const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                    this.setState({ seconds: numericValue });
+                                }}
+                            />
+                        </Form.Group>
+                    </Row>
 
                     <Button variant="primary" type="submit">
                         Calculate
