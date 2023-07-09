@@ -155,6 +155,8 @@ class WindCalculator extends Component {
                         </Col>
 
 
+
+
                     </Row>
 
 

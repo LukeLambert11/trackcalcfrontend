@@ -13,6 +13,7 @@ import PaceCalculator from "./PaceCalculator";
 import logo from "./logo.jpg";
 import TimeCalculator from "./TimeCalculator"; // Assuming you have the logo image file in the same directory
 import WindCalculator from "./WindCalculator";
+import IAAFCalculator from "./IAAFCalculator";
 
 
 class NavbarComp extends Component {
@@ -38,6 +39,7 @@ class NavbarComp extends Component {
                                     <Nav.Link as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
                                     <Nav.Link as={Link} to="/paceCalculator">Pace Calculator</Nav.Link>
                                     <Nav.Link as={Link} to="/timeCalculator">Time Calculator</Nav.Link>
+                                    <Nav.Link as={Link} to="/iaafCalculator">IAAF Conversion</Nav.Link>
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>
@@ -53,6 +55,9 @@ class NavbarComp extends Component {
                         </Route>
                         <Route path="/windCalculator">
                             <WindCalculator/>
+                        </Route>
+                        <Route path="/iaafCalculator">
+                            <IAAFCalculator/>
                         </Route>
                         <Route path="/">
                             <Home/>

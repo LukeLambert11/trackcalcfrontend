@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2ca15a5-f3ad-4a8d-89aa-8e67259f65f6" name="Changes" comment="" />
+    <list default="true" id="f2ca15a5-f3ad-4a8d-89aa-8e67259f65f6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/IAAFCalculator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/NavbarComp.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/NavbarComp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WindCalculator.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/WindCalculator.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +18,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -78,6 +83,8 @@
       <workItem from="1687894114828" duration="5898000" />
       <workItem from="1687995676700" duration="34999000" />
       <workItem from="1688610158369" duration="2330000" />
+      <workItem from="1688759928299" duration="8473000" />
+      <workItem from="1688927095659" duration="3764000" />
     </task>
     <servers />
   </component>
