@@ -29,7 +29,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
             this.setState({
                 errorMessage: '',
-                paceResult: null
+                timeResult: null
             });
 
 

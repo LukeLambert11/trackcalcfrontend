@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Form, FormLabel, Row} from "react-bootstrap";
 import Select from 'react-select';
 import './mobilestyles.css';
 
@@ -17,10 +17,7 @@ class WindCalculator extends Component {
         };
     }
 
-    handleInputChange = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
-    }
+
 
 
     handleSubmit = async (event) => {
@@ -34,21 +31,24 @@ class WindCalculator extends Component {
 
 
             // Perform calculations or further actions with the captured data
-            const {event, performance} = this.state;
-
+            const {event, performance, wind} = this.state;
             //fix for Nan when they get deleted
 
             // Create the DTO object with the captured data
             const params = {
                 performance: (performance !== null)? parseFloat(performance) : 0,
-                event
+                event,
+                wind
             };
 
             if(isNaN(params.performance)){
                 params.performance = 0;
             }
+            if(isNaN(params.wind)){
+                params.wind = 0;
+            }
 
-            if(isNaN(params.event)){
+            if(params.event === null || params.event === undefined){
                 params.event = '';
             }
 
@@ -59,7 +59,7 @@ class WindCalculator extends Component {
 
             // Validate the captured data
             if (
-               params.performance < 0
+               params.performance <= 0
             ) {
                 // Throw an error or handle the validation failure accordingly
                 throw new Error('Invalid input: performance must be greater than zero');
@@ -92,7 +92,7 @@ class WindCalculator extends Component {
 
     render() {
 
-        const { paceResult, errorMessage} = this.state;
+        const { windResult, errorMessage} = this.state;
 
 
 
@@ -157,76 +157,52 @@ class WindCalculator extends Component {
 
                     </Row>
 
-                    <Row>
-                        <Form.Group as={Col} controlId="formGridSeconds">
-                            <div>
-                                <Form.Label style={{ fontSize: '20px' }}>Time</Form.Label>
-                            </div>
-                            <Form.Control
-                                style={{width: '97%'}}
-                                type="text"
-                                pattern="[0-9]*(\.[0-9]*)?"
-                                inputMode="decimal"
-                                placeholder="seconds or meters"
-                                value={this.state.performance || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
-                                    this.setState({ performance: numericValue });
-                                }}
-                            />
-                        </Form.Group>
-                    </Row>
+
 
                     <Row className="mb-3">
-                        <div>
-                            <Form.Label style={{ fontSize: '20px' }}>Pace</Form.Label>
-                        </div>
-                        <Form.Group as={Col} controlId="formGridCity">
-                            <Form.Control
-                                type="text"
-                                pattern="[0-9]*"
-                                inputMode="numeric"
-                                placeholder="Hours"
-                                value={this.state.hours || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
-                                    this.setState({ hours: numericValue });
-                                }}
-                            />
-                        </Form.Group>
+                        <Col>
+                            <div style={{ textAlign: 'center', fontSize: '20px'}}>
+                                Wind
+                            </div>
+                            <Form.Group as={Col} >
+                                <Form.Control
+                                    style={{width: '97%'}}
+                                    type="text"
+                                    pattern="-?[0-9]*(\.[0-9]*)?"
+                                    inputMode="decimal"
+                                    placeholder="meters/second"
+                                    value={this.state.wind || ''}
+                                    onChange={(e) => {
+                                        const inputValue = e.target.value;
+                                        const numericValue = inputValue.replace(/[^-?\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                        this.setState({ wind: numericValue });
+                                    }}
+                                />
+                            </Form.Group>
+                        </Col>
 
-                        <Form.Group as={Col} controlId="formGridMinutes">
-                            <Form.Control
-                                type="text"
-                                pattern="[0-9]*"
-                                inputMode="numeric"
-                                placeholder="Minutes"
-                                value={this.state.minutes || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
-                                    this.setState({ minutes: numericValue });
-                                }}
-                            />
-                        </Form.Group>
-
-                        <Form.Group as={Col} controlId="formGridSeconds">
-                            <Form.Control
-                                type="text"
-                                pattern="[0-9]*(\.[0-9]*)?"
-                                inputMode="decimal"
-                                placeholder="Seconds"
-                                value={this.state.seconds || ''}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
-                                    this.setState({ seconds: numericValue });
-                                }}
-                            />
-                        </Form.Group>
+                        <Col>
+                            <div style={{ textAlign: 'center', fontSize: '20px'}}>
+                                    Performance
+                            </div>
+                            <Form.Group as={Col} controlId="formGridSeconds">
+                                <Form.Control
+                                    style={{width: '97%'}}
+                                    type="text"
+                                    pattern="[0-9]*(\.[0-9]*)?"
+                                    inputMode="decimal"
+                                    placeholder="seconds or meters"
+                                    value={this.state.performance || ''}
+                                    onChange={(e) => {
+                                        const inputValue = e.target.value;
+                                        const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                        this.setState({ performance: numericValue });
+                                    }}
+                                />
+                            </Form.Group>
+                        </Col>
                     </Row>
+
 
                     <Button variant="primary" type="submit">
                         Calculate
@@ -237,11 +213,10 @@ class WindCalculator extends Component {
                 {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
 
                 {/* Display the paceResult at the bottom of the webpage */}
-                {paceResult && (
+                {windResult && (
                     <div style={{fontSize: '20px', marginTop: '50px' }}>
-                        <h2>Pace Result:</h2>
-                        <p>Mile Pace: {paceResult.milePace}</p>
-                        <p>Kilometer Pace: {paceResult.kilometerPace}</p>
+                        <h2>Result:</h2>
+                        <p>Converted Performance: {windResult.convertedPerformance}</p>
                     </div>
                 )}
 
