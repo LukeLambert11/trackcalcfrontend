@@ -3,28 +3,26 @@ import axios from "axios";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import Select from "react-select";
 
+//TODO fix the DTO being passed to back end and just do testing to get it working
 
 
 class TimeCalculator extends Component {
     constructor(props) {
         super(props);
+        this.isTrackEvent = this.isTrackEvent.bind(this);
         this.state = {
             initialEventGender: 'male',
             convertingEventGender: 'male',
             initialEventEnvironment: 'outdoor',
             convertingEventEnvironment: 'outdoor',
-            distance: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            distanceUnit: 'miles',
-            timeResult: null
+            initialEvent: '',
+            convertingEvent: '',
+            initialEventHours: 0,
+            initialEventMinutes: 0,
+            initialEventSeconds: 0,
+            initialEventScore: 0,
+            ConvertedResult: null
         };
-    }
-
-    handleInputChange = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
     }
 
 
@@ -34,80 +32,70 @@ class TimeCalculator extends Component {
 
             this.setState({
                 errorMessage: '',
-                timeResult: null
+                ConvertedResult: null
             });
 
 
             // Perform calculations or further actions with the captured data
-            const {distance, hours, minutes, seconds, distanceUnit} = this.state;
+            const {initialEventGender, convertingEventGender, initialEventEnvironment, convertingEventEnvironment,
+                convertingEventHours, convertingEventMinutes, convertingEventSeconds,
+                convertingEventScore, initialEvent, convertingEvent} = this.state;
 
-            //fix for Nan when they get deleted
 
             // Create the DTO object with the captured data
-            const params = {
-                distance: (distance !== null)? parseFloat(distance) : 0,
-                hourPace: hours !== null ? parseInt(hours) : 0,
-                minutePace: minutes !== null ? parseInt(minutes) : 0,
-                secondPace: seconds !== null ? parseFloat(seconds) : 0,
-                paceUnits: distanceUnit
-            };
+            // Create the DTO object with the captured data
+            const params = {};
 
-            if(isNaN(params.distance)){
-                params.distance = 0;
+            if (this.isTrackEvent()) {
+                params.initialPerformance = null;
+                params.isField = false;
+                params.hours = parseInt(convertingEventHours);
+                params.minutes = parseInt(convertingEventMinutes);
+                params.seconds = parseFloat(convertingEventSeconds);
+
+            } else {
+                params.hours = null;
+                params.minutes = null;
+                params.seconds = null;
+                params.isField = false;
+                params.initialPerformance = convertingEventScore;
             }
 
-            if(isNaN(params.hourPace)){
-                params.hourPace = 0;
+// Set other parameters as needed
+            params.initialGender = initialEventGender;
+            params.convertingGender = convertingEventGender;
+            params.initialLocation = initialEventEnvironment;
+            params.convertingLocation = convertingEventEnvironment;
+            params.initialEvent = initialEvent;
+            params.convertingEvent = convertingEvent;
+
+
+
+            if(!params.isField){
+                if((isNaN(params.hours) || params.hours === 0) && (isNaN(params.minutes) || params.minutes ===0)
+                    &&  (isNaN(params.seconds) || params.seconds === 0)){
+                    throw new Error('Invalid input: distance, hours, minutes, or seconds must be greater than zero');
+                }
+                }
+            else{
+                if(isNaN(params.initialPerformance) || params.initialPerformance === 0){
+                    throw new Error('Invalid input: score must be greater than zero');
+                }
             }
 
-            if(isNaN(params.minutePace)){
-                params.minutePace = 0;
-            }
-
-            if(isNaN(params.secondPace)){
-                params.secondPace = 0;
-            }
-
-
-
-
-
-            // Validate the captured data
-            if (
-                params.distance < 0 ||
-                params.hourPace < 0 ||
-                params.minutePace < 0 ||
-                params.secondPace < 0
-            ) {
-                // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: distance, hours, minutes, or seconds cannot be negative');
-            }
-
-            if (
-                params.hourPace === 0  &&
-                params.minutePace === 0 &&
-                params.secondPace === 0
-            ) {
-                // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: pace cannot be zero');
-            }
-
-            if (
-                params.distance === 0
-            ) {
-                // Throw an error or handle the validation failure accordingly
-                throw new Error('Invalid input: distance cannot be zero');
+            if((params.initialEvent === ('')|| params.initialEvent === null) &&
+                (params.convertingEvent === ('')|| params.convertingEvent === null)){
+                throw new Error('Invalid input: initial event and converting event must be selected');
             }
 
 
 
 
-
-            const response = await axios.get('http://localhost:8080/time-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/equivalent-performance-calculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
-            const { time } = response.data;
-            this.setState({ timeResult: { time } });
+            const { convertedPerformance } = response.data;
+            this.setState({ ConvertedResult: { convertedPerformance } });
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
@@ -137,14 +125,14 @@ class TimeCalculator extends Component {
                     { value: '3000', label: '3000m' },
                     { value: '2MILES', label: '2 Miles' },
                     { value: '5000', label: '5000m' },
-                    { value: '4x200', label: '4x200m' },
-                    { value: '4x400', label: '4x400m' },
                     { value: 'HIGH_JUMP', label: 'High Jump' },
                     { value: 'LONG_JUMP', label: 'Long Jump' },
                     { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
                     { value: 'POLE_VAULT', label: 'Pole Vault' },
                     { value: 'SHOT_PUT', label: 'Shot Put' },
-                    { value: 'HEPTATHLON', label: 'Heptathlon' }
+                    { value: 'HEPTATHLON', label: 'Heptathlon' },
+                    { value: '4x200', label: '4x200m' },
+                    { value: '4x400', label: '4x400m' }
                 ],
                 outdoor: [
                     { value: '100', label: '100' },
@@ -165,6 +153,15 @@ class TimeCalculator extends Component {
                     { value: '400H', label: '400 H' },
                     { value: '2000SC', label: '2000 SC' },
                     { value: '3000SC', label: '3000 SC' },
+                    { value: 'HIGH_JUMP', label: 'High Jump' },
+                    { value: 'LONG_JUMP', label: 'Long Jump' },
+                    { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
+                    { value: 'DISCUS_THROW', label: 'Discus Throw' },
+                    { value: 'HAMMER_THROW', label: 'Hammer Throw' },
+                    { value: 'JAVELIN_THROW', label: 'Javelin Throw' },
+                    { value: 'POLE_VAULT', label: 'Pole Vault' },
+                    { value: 'SHOT_PUT', label: 'Shot Put' },
+                    { value: 'DECATHLON', label: 'Decathlon' },
                     { value: '4x100', label: '4x100' },
                     { value: '4x200', label: '4x200' },
                     { value: '4x400', label: '4x400' },
@@ -183,16 +180,7 @@ class TimeCalculator extends Component {
                     { value: 'WALK_20KM', label: 'Walk 20 km' },
                     { value: 'WALK_30KM', label: 'Walk 30 km' },
                     { value: 'WALK_35KM', label: 'Walk 35 km' },
-                    { value: 'WALK_50KM', label: 'Walk 50 km' },
-                    { value: 'HIGH_JUMP', label: 'High Jump' },
-                    { value: 'LONG_JUMP', label: 'Long Jump' },
-                    { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
-                    { value: 'DISCUS_THROW', label: 'Discus Throw' },
-                    { value: 'HAMMER_THROW', label: 'Hammer Throw' },
-                    { value: 'JAVELIN_THROW', label: 'Javelin Throw' },
-                    { value: 'POLE_VAULT', label: 'Pole Vault' },
-                    { value: 'SHOT_PUT', label: 'Shot Put' },
-                    { value: 'DECATHLON', label: 'Decathlon' }
+                    { value: 'WALK_50KM', label: 'Walk 50 km' }
                 ]
             },
             female: {
@@ -216,14 +204,14 @@ class TimeCalculator extends Component {
                     { value: '3000', label: '3000m' },
                     { value: '2MILES', label: '2 Miles' },
                     { value: '5000', label: '5000m' },
-                    { value: '4x200', label: '4x200m' },
-                    { value: '4x400', label: '4x400m' },
                     { value: 'HIGH_JUMP', label: 'High Jump' },
                     { value: 'LONG_JUMP', label: 'Long Jump' },
                     { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
                     { value: 'POLE_VAULT', label: 'Pole Vault' },
                     { value: 'SHOT_PUT', label: 'Shot Put' },
-                    { value: 'PENTATHLON', label: 'Pentathlon' }
+                    { value: 'PENTATHLON', label: 'Pentathlon' },
+                    { value: '4x200', label: '4x200m' },
+                    { value: '4x400', label: '4x400m' }
                 ],
                 outdoor: [
                     { value: '100', label: '100' },
@@ -244,6 +232,15 @@ class TimeCalculator extends Component {
                     { value: '400H', label: '400 H' },
                     { value: '2000SC', label: '2000 SC' },
                     { value: '3000SC', label: '3000 SC' },
+                    { value: 'HIGH_JUMP', label: 'High Jump' },
+                    { value: 'LONG_JUMP', label: 'Long Jump' },
+                    { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
+                    { value: 'DISCUS_THROW', label: 'Discus Throw' },
+                    { value: 'HAMMER_THROW', label: 'Hammer Throw' },
+                    { value: 'JAVELIN_THROW', label: 'Javelin Throw' },
+                    { value: 'POLE_VAULT', label: 'Pole Vault' },
+                    { value: 'SHOT_PUT', label: 'Shot Put' },
+                    { value: 'HEPTATHLON', label: 'Heptathlon' },
                     { value: '4x100', label: '4x100' },
                     { value: '4x200', label: '4x200' },
                     { value: '4x400', label: '4x400' },
@@ -261,16 +258,7 @@ class TimeCalculator extends Component {
                     { value: 'WALK_10KM', label: 'Walk 10 km' },
                     { value: 'WALK_20KM', label: 'Walk 20 km' },
                     { value: 'WALK_30KM', label: 'Walk 30 km' },
-                    { value: 'WALK_50KM', label: 'Walk 50 km' },
-                    { value: 'HIGH_JUMP', label: 'High Jump' },
-                    { value: 'LONG_JUMP', label: 'Long Jump' },
-                    { value: 'TRIPLE_JUMP', label: 'Triple Jump' },
-                    { value: 'DISCUS_THROW', label: 'Discus Throw' },
-                    { value: 'HAMMER_THROW', label: 'Hammer Throw' },
-                    { value: 'JAVELIN_THROW', label: 'Javelin Throw' },
-                    { value: 'POLE_VAULT', label: 'Pole Vault' },
-                    { value: 'SHOT_PUT', label: 'Shot Put' },
-                    { value: 'HEPTATHLON', label: 'Heptathlon' }
+                    { value: 'WALK_50KM', label: 'Walk 50 km' }
                 ]
             }
         };
@@ -280,6 +268,15 @@ class TimeCalculator extends Component {
     }
 
 
+    isTrackEvent() {
+        const { initialEvent } = this.state;
+        const fieldEvents = ['HIGH_JUMP', 'LONG_JUMP', 'TRIPLE_JUMP', 'DISCUS_THROW', 'HAMMER_THROW',
+            'JAVELIN_THROW', 'POLE_VAULT', 'SHOT_PUT', 'HEPTATHLON', 'PENTATHLON', 'DECATHLON'];
+
+        // Check if the selected event is in the list of field events
+        return  !fieldEvents.includes(initialEvent);
+    }
+
 
 
 
@@ -287,7 +284,7 @@ class TimeCalculator extends Component {
 
     render() {
 
-        const { timeResult, errorMessage} = this.state;
+        const { ConvertedResult, errorMessage} = this.state;
 
         const divStyle = {
             padding: '1%',
@@ -376,9 +373,8 @@ class TimeCalculator extends Component {
 
                                     options={this.getEventOptions(this.state.initialEventGender, this.state.initialEventEnvironment)} // Pass the gender and environment values
                                     placeholder="Select event"
-                                    //styles={selectStyles}
                                     onChange={(e) => {
-                                        this.setState({ event: e.value });
+                                        this.setState({ initialEvent: e.value });
                                     }}
                                 />
                             </div>
@@ -387,6 +383,80 @@ class TimeCalculator extends Component {
 
 
 
+                    </Row>
+
+                    <div style={{ fontSize: '22px',marginBottom: '20px', marginTop: '40px'/* Default spacing */}}>
+                        Performance
+                    </div>
+
+                    <Row className="mb-3">
+                        {this.isTrackEvent() ? (
+                            <>
+                                <Form.Group as={Col}>
+                                    <Form.Control
+                                        type="text"
+                                        pattern="[0-9]*"
+                                        inputMode="numeric"
+                                        placeholder="Hours"
+                                        value={this.state.initialEventHours || ''}
+                                        onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                            this.setState({ initialEventHours: numericValue });
+                                        }}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Control
+                                        type="text"
+                                        pattern="[0-9]*"
+                                        inputMode="numeric"
+                                        placeholder="Minutes"
+                                        value={this.state.initialEventMinutes || ''}
+                                        onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            const numericValue = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                            this.setState({ initialEventMinutes: numericValue });
+                                        }}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col} >
+                                    <Form.Control
+                                        type="text"
+                                        pattern="[0-9]*(\.[0-9]*)?"
+                                        inputMode="decimal"
+                                        placeholder="Seconds"
+                                        value={this.state.initialEventSeconds || ''}
+                                        onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                            this.setState({ initialEventSeconds: numericValue });
+                                        }}
+                                    />
+                                </Form.Group>
+                            </>
+                        ) : (
+                            <div className="d-flex justify-content-center">
+                                <div className="col-12 col-md-4">
+                                    <Form.Group>
+                                        <Form.Control
+                                            type="text"
+                                            pattern="[0-9]*(\.[0-9]*)?"
+                                            inputMode="decimal"
+                                            placeholder="Meters or Score"
+                                            value={this.state.initialEventScore || ''}
+                                            onChange={(e) => {
+                                                const inputValue = e.target.value;
+                                                const numericValue = inputValue.replace(/[^\d.]/g, ''); // Remove non-numeric and non-decimal characters
+                                                this.setState({ initialEventScore: numericValue });
+                                            }}
+                                        />
+                                    </Form.Group>
+                                </div>
+                            </div>
+                        )}
                     </Row>
 
                     <div style={{ fontSize: '22px',marginBottom: '20px', marginTop: '40px'/* Default spacing */}}>
@@ -456,13 +526,11 @@ class TimeCalculator extends Component {
                                     placeholder="Select event"
                                     //styles={selectStyles}
                                     onChange={(e) => {
-                                        this.setState({ event: e.value });
+                                        this.setState({ convertingEvent: e.value });
                                     }}
                                 />
                             </div>
                         </Col>
-
-
 
 
                     </Row>
@@ -477,10 +545,10 @@ class TimeCalculator extends Component {
                 {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
 
                 {/* Display the paceResult at the bottom of the webpage */}
-                {timeResult && (
+                {ConvertedResult && (
                     <div style={{fontSize: '20px', marginTop: '50px' }}>
                         <h2>Time Result:</h2>
-                        <p>Time: {timeResult.time}</p>
+                        <p>Time: {ConvertedResult.time}</p>
                     </div>
                 )}
 
