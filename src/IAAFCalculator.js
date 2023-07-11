@@ -13,8 +13,8 @@ class TimeCalculator extends Component {
         this.state = {
             initialEventGender: 'male',
             convertingEventGender: 'male',
-            initialEventEnvironment: 'outdoor',
-            convertingEventEnvironment: 'outdoor',
+            initialEventEnvironment: 'Outdoor',
+            convertingEventEnvironment: 'Outdoor',
             initialEvent: '',
             convertingEvent: '',
             initialEventHours: 0,
@@ -32,33 +32,39 @@ class TimeCalculator extends Component {
 
             this.setState({
                 errorMessage: '',
-                ConvertedResult: null
+                convertedResult: null
             });
 
 
             // Perform calculations or further actions with the captured data
             const {initialEventGender, convertingEventGender, initialEventEnvironment, convertingEventEnvironment,
-                convertingEventHours, convertingEventMinutes, convertingEventSeconds,
-                convertingEventScore, initialEvent, convertingEvent} = this.state;
+                initialEventHours, initialEventMinutes, initialEventSeconds,
+                initialEventScore, initialEvent, convertingEvent} = this.state;
+
+            console.log(initialEventGender, convertingEventGender, initialEventEnvironment, convertingEventEnvironment,
+                initialEventHours, initialEventMinutes, initialEventSeconds,
+                initialEventScore, initialEvent, convertingEvent);
 
 
             // Create the DTO object with the captured data
             // Create the DTO object with the captured data
-            const params = {};
+            const params = {
+            };
+
 
             if (this.isTrackEvent()) {
                 params.initialPerformance = null;
                 params.isField = false;
-                params.hours = parseInt(convertingEventHours);
-                params.minutes = parseInt(convertingEventMinutes);
-                params.seconds = parseFloat(convertingEventSeconds);
+                params.hours = (initialEventHours !== null)? parseInt(initialEventHours): 0;
+                params.minutes = (initialEventMinutes !== null)? parseInt(initialEventMinutes): 0;
+                params.seconds = (initialEventSeconds !== null)? parseFloat(initialEventSeconds): 0;
 
             } else {
                 params.hours = null;
                 params.minutes = null;
                 params.seconds = null;
-                params.isField = false;
-                params.initialPerformance = convertingEventScore;
+                params.isField = true;
+                params.initialPerformance = (initialEventScore !== null)? parseFloat(initialEventScore): 0;
             }
 
 // Set other parameters as needed
@@ -69,7 +75,7 @@ class TimeCalculator extends Component {
             params.initialEvent = initialEvent;
             params.convertingEvent = convertingEvent;
 
-
+        console.log(params);
 
             if(!params.isField){
                 if((isNaN(params.hours) || params.hours === 0) && (isNaN(params.minutes) || params.minutes ===0)
@@ -88,14 +94,14 @@ class TimeCalculator extends Component {
                 throw new Error('Invalid input: initial event and converting event must be selected');
             }
 
-
+            console.log(params);
 
 
             const response = await axios.get('http://localhost:8080/equivalent-performance-calculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
             const { convertedPerformance } = response.data;
-            this.setState({ ConvertedResult: { convertedPerformance } });
+            this.setState({ convertedResult: { convertedPerformance } });
         } catch (error) {
             console.error(error);
             this.setState({ errorMessage: error});
@@ -105,7 +111,7 @@ class TimeCalculator extends Component {
     getEventOptions(selectedGender, selectedEnvironment) {
         const optionsByCombination = {
             male: {
-                indoor: [
+                Indoor: [
                     { value: '50', label: '50m' },
                     { value: '50H', label: '50mH' },
                     { value: '55', label: '55m' },
@@ -134,7 +140,7 @@ class TimeCalculator extends Component {
                     { value: '4x200', label: '4x200m' },
                     { value: '4x400', label: '4x400m' }
                 ],
-                outdoor: [
+                Outdoor: [
                     { value: '100', label: '100' },
                     { value: '200', label: '200' },
                     { value: '300', label: '300' },
@@ -184,7 +190,7 @@ class TimeCalculator extends Component {
                 ]
             },
             female: {
-                indoor: [
+                Indoor: [
                     { value: '50', label: '50m' },
                     { value: '50H', label: '50mH' },
                     { value: '55', label: '55m' },
@@ -213,7 +219,7 @@ class TimeCalculator extends Component {
                     { value: '4x200', label: '4x200m' },
                     { value: '4x400', label: '4x400m' }
                 ],
-                outdoor: [
+                Outdoor: [
                     { value: '100', label: '100' },
                     { value: '200', label: '200' },
                     { value: '300', label: '300' },
@@ -284,7 +290,7 @@ class TimeCalculator extends Component {
 
     render() {
 
-        const { ConvertedResult, errorMessage} = this.state;
+        const { convertedResult, errorMessage} = this.state;
 
         const divStyle = {
             padding: '1%',
@@ -297,7 +303,7 @@ class TimeCalculator extends Component {
             <div style={divStyle}>
                 <h1 style={{
                     marginBottom: '20px', /* Default spacing */
-                    marginTop: '30px',
+                    marginTop: '18px',
 
                     /* Adjust spacing for smaller screens */
                     '@media (maxWidth: 767px)': {
@@ -347,16 +353,16 @@ class TimeCalculator extends Component {
                                     id="intialeventoutdoor"
                                     style={{ marginRight: '10px' }}
                                     defaultChecked
-                                    checked={this.state.initialEventEnvironment === 'outdoor'}
-                                    onChange={() => this.setState({ initialEventEnvironment: 'outdoor' })}
+                                    checked={this.state.initialEventEnvironment === 'Outdoor'}
+                                    onChange={() => this.setState({ initialEventEnvironment: 'Outdoor' })}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="indoor"
                                     id="initialeventindoor"
                                     style={{ marginRight: '10px' }}
-                                    checked={this.state.initialEventEnvironment === 'indoor'}
-                                    onChange={() => this.setState({ initialEventEnvironment: 'indoor' })}
+                                    checked={this.state.initialEventEnvironment === 'Indoor'}
+                                    onChange={() => this.setState({ initialEventEnvironment: 'Indoor' })}
                                 />
                             </Form.Group>
 
@@ -392,7 +398,7 @@ class TimeCalculator extends Component {
                     <Row className="mb-3">
                         {this.isTrackEvent() ? (
                             <>
-                                <Form.Group as={Col}>
+                                <Form.Group as={Col} >
                                     <Form.Control
                                         type="text"
                                         pattern="[0-9]*"
@@ -498,16 +504,16 @@ class TimeCalculator extends Component {
                                     id="convertingeventoutdoor"
                                     style={{ marginRight: '10px' }}
                                     defaultChecked
-                                    checked={this.state.convertingEventEnvironment === 'outdoor'}
-                                    onChange={() => this.setState({ convertingEventEnvironment: 'outdoor' })}
+                                    checked={this.state.convertingEventEnvironment === 'Outdoor'}
+                                    onChange={() => this.setState({ convertingEventEnvironment: 'Outdoor' })}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="indoor"
                                     id="convertingeventindoor"
                                     style={{ marginRight: '10px' }}
-                                    checked={this.state.convertingEventEnvironment === 'indoor'}
-                                    onChange={() => this.setState({ convertingEventEnvironment: 'indoor' })}
+                                    checked={this.state.convertingEventEnvironment === 'Indoor'}
+                                    onChange={() => this.setState({ convertingEventEnvironment: 'Indoor' })}
                                 />
                             </Form.Group>
 
@@ -545,10 +551,10 @@ class TimeCalculator extends Component {
                 {errorMessage && <p className="error-message" style={{fontSize: '20px', marginTop: '50px' }}>{errorMessage.toString()}</p>}
 
                 {/* Display the paceResult at the bottom of the webpage */}
-                {ConvertedResult && (
+                {convertedResult && (
                     <div style={{fontSize: '20px', marginTop: '50px' }}>
                         <h2>Time Result:</h2>
-                        <p>Time: {ConvertedResult.time}</p>
+                        <p>Time: {convertedResult.convertedPerformance}</p>
                     </div>
                 )}
 

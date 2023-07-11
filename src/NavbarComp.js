@@ -20,9 +20,9 @@ class NavbarComp extends Component {
     render() {
 
         const logoStyle = {
-            width: '100px', // Adjust the width to your desired size
-            height : '100px',
-            marginRight: '75px', // Adjust the margin-right to add space between the logo and text
+            width: '80', // Adjust the width to your desired size
+            height : '80px',
+            marginRight: '100px', // Adjust the margin-right to add space between the logo and text
         };
 
         return (
@@ -36,10 +36,10 @@ class NavbarComp extends Component {
                             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                             <Navbar.Collapse id="responsive-navbar-nav">
                                 <Nav className="me-auto">
-                                    <Nav.Link as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
                                     <Nav.Link as={Link} to="/paceCalculator">Pace Calculator</Nav.Link>
                                     <Nav.Link as={Link} to="/timeCalculator">Time Calculator</Nav.Link>
                                     <Nav.Link as={Link} to="/iaafCalculator">IAAF Conversion</Nav.Link>
+                                    <Nav.Link as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>

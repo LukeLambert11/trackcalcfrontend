@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import {Button, Col, Form, FormLabel, Row} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import Select from 'react-select';
 import './mobilestyles.css';
 
@@ -117,7 +117,7 @@ class WindCalculator extends Component {
             <div style={divStyle}>
                 <h1 style={{
                     marginBottom: '30px', /* Default spacing */
-                    marginTop: '30px',
+                    marginTop: '18px',
 
                     /* Adjust spacing for smaller screens */
                     '@media (maxWidth: 767px)': {

@@ -127,7 +127,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
             <div style={divStyle}>
                 <h1 style={{
                     marginBottom: '30px', /* Default spacing */
-                    marginTop: '30px',
+                    marginTop: '18px',
 
                     /* Adjust spacing for smaller screens */
                     '@media (maxWidth: 767px)': {
@@ -184,7 +184,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
                     <div>
                         <Form.Label style={{ fontSize: '20px' }}>Pace</Form.Label>
                     </div>
-                    <Form.Group as={Col} controlId="formGridCity">
+                    <Form.Group as={Col}>
                         <Form.Control
                             type="text"
                             pattern="[0-9]*"

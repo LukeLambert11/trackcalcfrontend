@@ -126,7 +126,7 @@ class PaceCalculator extends Component {
              <div style={divStyle}>
                 <h1 style={{
                     marginBottom: '30px', /* Default spacing */
-                    marginTop: '30px',
+                    marginTop: '18px',
 
                     /* Adjust spacing for smaller screens */
                     '@media (maxWidth: 767px)': {
