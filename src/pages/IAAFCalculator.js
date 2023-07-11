@@ -77,6 +77,16 @@ class TimeCalculator extends Component {
 
         console.log(params);
 
+            if(isNaN(params.hours)){
+                params.hours = 0;
+            }
+            if(isNaN(params.minutes)){
+                params.minutes = 0;
+            }
+            if(isNaN(params.seconds)){
+                params.seconds = 0;
+            }
+
             if(!params.isField){
                 if((isNaN(params.hours) || params.hours === 0) && (isNaN(params.minutes) || params.minutes ===0)
                     &&  (isNaN(params.seconds) || params.seconds === 0)){
@@ -97,7 +107,7 @@ class TimeCalculator extends Component {
             console.log(params);
 
 
-            const response = await axios.get('http://localhost:8080/equivalent-performance-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/iaafCalculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
             const { convertedPerformance } = response.data;
@@ -553,8 +563,8 @@ class TimeCalculator extends Component {
                 {/* Display the paceResult at the bottom of the webpage */}
                 {convertedResult && (
                     <div style={{fontSize: '20px', marginTop: '50px' }}>
-                        <h2>Time Result:</h2>
-                        <p>Time: {convertedResult.convertedPerformance}</p>
+                        <h2>Converted Performance:</h2>
+                        <p>Performance: {convertedResult.convertedPerformance}</p>
                     </div>
                 )}
 

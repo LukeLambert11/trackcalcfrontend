@@ -98,7 +98,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
 
 
-            const response = await axios.get('http://localhost:8080/time-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/timeCalculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
             const { time } = response.data;

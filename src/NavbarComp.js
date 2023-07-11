@@ -8,23 +8,18 @@ import {
     Link
 } from "react-router-dom";
 
-import Home from "./Home";
-import PaceCalculator from "./PaceCalculator";
-import logo from "./logo.jpg";
-import TimeCalculator from "./TimeCalculator"; // Assuming you have the logo image file in the same directory
-import WindCalculator from "./WindCalculator";
-import IAAFCalculator from "./IAAFCalculator";
+import Home from "./pages/Home";
+import PaceCalculator from "./pages/PaceCalculator";
+import logo from "./logowhite.PNG";
+import TimeCalculator from "./pages/TimeCalculator"; // Assuming you have the logo image file in the same directory
+import WindCalculator from "./pages/WindCalculator";
+import IAAFCalculator from "./pages/IAAFCalculator";
+import './styles/mobilestyles.css';
 
 
 
 class NavbarComp extends Component {
     render() {
-
-        const logoStyle = {
-            width: '80', // Adjust the width to your desired size
-            height : '80px',
-            marginRight: '100px', // Adjust the margin-right to add space between the logo and text
-        };
 
         return (
             <Router>
@@ -32,7 +27,7 @@ class NavbarComp extends Component {
                     <Navbar bg="dark" variant="dark" expand="lg">
                         <Container fluid>
                             <Navbar.Brand as={Link} to="/">
-                                <img src={logo} alt="Logo" style={logoStyle} className="logo" />
+                                <img src={logo} alt="Logo"  className="navbarlogo" />
                             </Navbar.Brand>
                             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                             <Navbar.Collapse id="responsive-navbar-nav">

@@ -1,0 +1,47 @@
+.responsive-heading {
+    margin-bottom: 30px; /* Default spacing */
+    margin-top: 30px;
+
+    /* Adjust spacing for smaller screens */
+}
+
+@media (max-width: 767px) {
+    .responsive-heading {
+        margin-bottom: 10px; /* Reduced spacing for mobile */
+        margin-top: 10px;
+    }
+}
+
+
+.logo {
+    width: 40%;
+}
+
+@media (max-width: 767px) {
+    .logo {
+        margin-top: 15px;
+        width: 70%;
+    }
+}
+
+.navbarlogo {
+    width: 120px;
+    height: 90px;
+    margin-left: 75px;
+    margin-right: 75px;
+}
+
+@media (max-width: 767px) {
+    .navbarlogo {
+        width: 100px;
+        height: 80px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .byline-container {
+        bottom: -40%;
+    }
+}

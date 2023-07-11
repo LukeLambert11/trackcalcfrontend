@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import axios from "axios";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import Select from 'react-select';
-import './mobilestyles.css';
+import '../styles/mobilestyles.css';
 
 
 class WindCalculator extends Component {
@@ -74,7 +74,7 @@ class WindCalculator extends Component {
 
 
 
-            const response = await axios.get('http://localhost:8080/wind-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/windCalculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
             const {convertedPerformance} = response.data;

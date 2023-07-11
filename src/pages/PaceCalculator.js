@@ -98,7 +98,7 @@ class PaceCalculator extends Component {
 
 
 
-            const response = await axios.get('http://localhost:8080/pace-calculator', { params: params });
+            const response = await axios.get('http://localhost:8080/paceCalculator', { params: params });
 
             // Update the paceResult in the component's state with the API response
             const { milePace, kilometerPace } = response.data;
