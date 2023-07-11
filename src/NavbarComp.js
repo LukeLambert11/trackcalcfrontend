@@ -16,6 +16,7 @@ import WindCalculator from "./WindCalculator";
 import IAAFCalculator from "./IAAFCalculator";
 
 
+
 class NavbarComp extends Component {
     render() {
 
@@ -36,10 +37,10 @@ class NavbarComp extends Component {
                             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                             <Navbar.Collapse id="responsive-navbar-nav">
                                 <Nav className="me-auto">
-                                    <Nav.Link as={Link} to="/paceCalculator">Pace Calculator</Nav.Link>
-                                    <Nav.Link as={Link} to="/timeCalculator">Time Calculator</Nav.Link>
-                                    <Nav.Link as={Link} to="/iaafCalculator">IAAF Conversion</Nav.Link>
-                                    <Nav.Link as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
+                                    <Nav.Link style={{fontSize: '25px'}} as={Link} to="/paceCalculator" >Pace Calculator</Nav.Link>
+                                    <Nav.Link style={{fontSize: '25px'}} as={Link} to="/timeCalculator">Time Calculator</Nav.Link>
+                                    <Nav.Link style={{fontSize: '25px'}} as={Link} to="/iaafCalculator">IAAF Conversion</Nav.Link>
+                                    <Nav.Link style={{fontSize: '25px'}} as={Link} to="/windCalculator">Wind Calculator</Nav.Link>
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>
